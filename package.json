@@ -1,0 +1,13 @@
+{
+  "name": "release-day",
+  "version": "1.0.0",
+  "description": "Стартовое приложение модуля 6 курса Docker 2026: страница и счётчик посещений в томе /data",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "license": "MIT"
+}

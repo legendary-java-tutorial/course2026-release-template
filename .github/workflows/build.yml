@@ -1,0 +1,44 @@
+name: build
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Скачать код
+        uses: actions/checkout@v7
+
+      - name: Войти в Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Подготовить QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Подготовить Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Теги из метки
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: username/app
+          tags: |
+            type=semver,pattern={{version}}
+
+      - name: Собрать и отправить
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
